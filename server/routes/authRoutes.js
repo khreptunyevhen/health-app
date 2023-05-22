@@ -1,12 +1,12 @@
 import express from "express";
 import { __dirname } from "../app.js";
-import insertTheUser from "../models/user.js";
+import { insertTheUser, insertTheSession } from "../models/user.js";
 import {
   getHashedPassword,
   comparePassword,
 } from "../utils/getHashedPassword.js";
 import db from "../db.js";
-import bcrypt from "bcrypt";
+import { v4 as uuidv4 } from "uuid";
 
 const router = express.Router();
 
@@ -45,28 +45,41 @@ router.post("/user/register", async (req, res) => {
 });
 
 router.post("/user/login", async (req, res) => {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-  // Fetch the user with the provided email
-  const userInfo = await db.query("SELECT * FROM users WHERE email = $1", [
-    email,
-  ]);
+    // Fetch the user with the provided email
+    const userInfo = await db.query("SELECT * FROM users WHERE email = $1", [
+      email,
+    ]);
 
-  const user = userInfo.rows[0];
+    const user = userInfo.rows[0];
 
-  const isCorrectPassword = await comparePassword(password, user.password);
-  // If no such user exists, or the password is incorrect, send an error
-  if (!user || !isCorrectPassword) {
-    res.status(400).json({ message: "Invalid email or password" });
-    return;
+    const isCorrectPassword = await comparePassword(password, user.password);
+    // If no such user exists, or the password is incorrect, send an error
+    if (!user || !isCorrectPassword) {
+      res.status(401).json({ message: "Invalid email or password" });
+      return;
+    }
+    // If the credentials are correct, create a new session
+    const sessionToken = uuidv4();
+    const oneDay = 24 * 60 * 60 * 1000;
+    const expiresAt = new Date(Date.now() + oneDay);
+
+    insertTheSession(sessionToken, user.id, expiresAt);
+    // Set a cookie with the token
+    res.cookie("token", sessionToken, {
+      expires: expiresAt,
+      httpOnly: true,
+      sameSite: "Strict",
+    });
+
+    // Send a response indicating successful login
+    res.status(200).json({ message: "User logged in successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error with the login." });
   }
-  // If the credentials are correct, create a new session
-
-  // Set a cookie with the token
-
-  // Send a response indicating successful login
-
-  res.json({ message: "hello" });
 });
 
 export default router;
