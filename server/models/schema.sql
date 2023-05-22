@@ -1,7 +1,7 @@
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   username VARCHAR(255) NOT NULL,
-  email VARCHAR(255) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
   password VARCHAR(255) NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -9,7 +9,7 @@ CREATE TABLE users (
 CREATE TABLE sessions (
   id SERIAL PRIMARY KEY,
   user_id INTEGER REFERENCES users(id),
-  token VARCHAR(255) NOT NULL,
+  token VARCHAR(255) UNIQUE NOT NULL,
   expires_at TIMESTAMPTZ NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
