@@ -3,6 +3,7 @@ import colors from "colors";
 import * as url from "url";
 import dotenv from "dotenv";
 import db from "./db.js";
+import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes.js";
 
 dotenv.config();
@@ -11,6 +12,7 @@ export const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 
 const app = express();
 
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.static("public"));
 

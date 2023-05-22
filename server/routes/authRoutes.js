@@ -5,6 +5,7 @@ import {
   getHashedPassword,
   comparePassword,
 } from "../utils/getHashedPassword.js";
+import { authChecked } from "../middleware/authCheked.js";
 import db from "../db.js";
 import { v4 as uuidv4 } from "uuid";
 
@@ -23,12 +24,25 @@ router.get("/user/login", (req, res) => {
   res.sendFile("login.html", { root: __dirname + "/views" });
 });
 
+router.get("/user/dashboard", authChecked, (req, res) => {
+  res.sendFile("dashboard.html", { root: __dirname + "/views" });
+});
+
 router.post("/user/register", async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
     if (!password || password.length < 8) {
       res.status(400).json({ message: "Invalid password." });
+      return;
+    }
+
+    const usersEmail = await db.query("SELECT email FROM users");
+
+    const existEmail = usersEmail.rows.find((e) => e.email === email);
+
+    if (existEmail) {
+      res.status(400).json({ message: "User already exist" });
       return;
     }
 
