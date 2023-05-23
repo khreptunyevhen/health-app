@@ -87,7 +87,6 @@ router.post("/user/login", async (req, res) => {
       sameSite: "Strict",
     });
 
-    console.log("res", res.cookie);
     console.log("req", req.cookies);
 
     // Send a response indicating successful login
