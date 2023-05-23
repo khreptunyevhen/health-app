@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import db from "./db.js";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes.js";
+import { authChecked } from "./middleware/authCheked.js";
 
 dotenv.config();
 
@@ -12,12 +13,18 @@ export const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 
 const app = express();
 
+app.use(express.static("public"));
+
 app.use(cookieParser());
 app.use(express.json());
-app.use(express.static("public"));
+app.use(express.urlencoded({ extended: false }));
 
 // Using the routers
 app.use("/", authRoutes);
+
+app.get("/user/dashboard", authChecked, (req, res) => {
+  res.sendFile("dashboard.html", { root: __dirname + "/views" });
+});
 
 const PORT = process.env.PORT || 3000;
 
