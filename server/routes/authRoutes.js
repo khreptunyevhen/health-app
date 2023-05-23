@@ -5,6 +5,7 @@ import {
   getHashedPassword,
   comparePassword,
 } from "../utils/getHashedPassword.js";
+import { authChecked } from "../middleware/authChecked.js";
 import db from "../db.js";
 import { v4 as uuidv4 } from "uuid";
 
@@ -23,9 +24,9 @@ router.get("/user/login", (req, res) => {
   res.sendFile("login.html", { root: __dirname + "/views" });
 });
 
-// router.get("/user/dashboard", authChecked, (req, res) => {
-//   res.sendFile("dashboard.html", { root: __dirname + "/views" });
-// });
+router.get("/user/dashboard", authChecked, (req, res) => {
+  res.sendFile("dashboard.html", { root: __dirname + "/views" });
+});
 
 router.post("/user/register", async (req, res) => {
   try {
