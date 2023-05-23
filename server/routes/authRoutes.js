@@ -87,14 +87,17 @@ router.post("/user/login", async (req, res) => {
       sameSite: "Strict",
     });
 
-    console.log("req", req.cookies);
-
     // Send a response indicating successful login
     res.status(200).json({ message: "User logged in successfully" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Error with the login." });
   }
+});
+
+router.get("/user/logout", (req, res) => {
+  res.clearCookie("token");
+  res.end();
 });
 
 export default router;
