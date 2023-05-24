@@ -5,14 +5,25 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Register</title>
+    <base href="/" />
+    <link rel="stylesheet" href="./css/reset.css" />
+    <link rel="stylesheet" href="./css/style.css" />
   </head>
   <body>
-    <h1>login</h1>
-    <input id="name" type="text" placeholder="User name" />
-    <input type="text" placeholder="Password" />
-    <input type="text" placeholder="Confirm password" />
-    <input id="email" type="text" placeholder="E-mail address" />
-    <p>Have an account?</p>
-    <button>Login</button>
+    <div class="container">
+      <h1 class="title">Register</h1>
+      <form id="register-form">
+        <input id="register-name" type="text" placeholder="User name" />
+        <input id="register-password" type="password" placeholder="Password" />
+        <input
+          id="register-password--repeat"
+          type="password"
+          placeholder="Confirm password"
+        />
+        <input id="register-email" type="text" placeholder="E-mail address" />
+      </form>
+      <p class="">Have an account?</p>
+      <button class="button" id="register-btn">Login</button>
+    </div>
   </body>
 </html>

@@ -12,7 +12,7 @@ export const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 
 const app = express();
 
-app.use(express.static("public"));
+app.use(express.static("public", { extensions: ["css"] }));
 
 app.use(cookieParser());
 app.use(express.json());
